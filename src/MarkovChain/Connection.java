@@ -1,5 +1,7 @@
 package MarkovChain;
 
+import java.util.Objects;
+
 class Connection implements Comparable<Connection>{
     private int frequency;
     private float probability;
@@ -48,6 +50,18 @@ class Connection implements Comparable<Connection>{
 
     public int compareTo(Connection other){
         return (this.getFrequency() - other.getFrequency());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Connection that)) return false;
+        return frequency == that.frequency && Objects.equals(points_to, that.points_to);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(frequency, points_to);
     }
 
     public boolean pointsToWord(String word){

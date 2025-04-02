@@ -1,8 +1,9 @@
 package MarkovChain;
 
+import java.util.Objects;
 import java.util.TreeSet;
 
-class MarkovNode{
+class MarkovNode implements Comparable<MarkovNode>{
     private String word;
     private TreeSet<Connection> pointsTo;
     private int CountConnections;
@@ -72,4 +73,29 @@ class MarkovNode{
         }
     }
 
+    public int compareTo(MarkovNode other){
+        return this.getCountConnections() - other.getCountConnections();
+    }
+
+//    public boolean equals(Object other){
+//        if(other instanceof MarkovNode){
+//            MarkovNode oth = (MarkovNode) other;
+//            return this.pointsTo.equals(oth.getPointsTo()) && this.getWord().equals(oth.getWord()) && this.getCountConnections() == oth.getCountConnections();
+//        }
+//
+//        throw new IllegalArgumentException("Tried to compare " + this.word + " with something else");
+//    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MarkovNode that)) return false;
+        return Objects.equals(word, that.word);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(word);
+    }
 }

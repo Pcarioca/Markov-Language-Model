@@ -4,7 +4,7 @@ import java.util.Objects;
 
 class Connection implements Comparable<Connection>{
     private int frequency;
-    private float probability;
+    private double probability;
     private MarkovNode points_to;
 
     public Connection(int frequency, MarkovNode points_to){
@@ -24,7 +24,7 @@ class Connection implements Comparable<Connection>{
             adding new conntections
         */
 
-    public void update_probability(float probability){
+    public void updateProbability(double probability){
         this.probability = probability;
     }
 
@@ -36,11 +36,11 @@ class Connection implements Comparable<Connection>{
         this.frequency = frequency;
     }
 
-    public float getProbability() {
+    public double getProbability() {
         return probability;
     }
 
-    public void setProbability(float probability) {
+    public void setProbability(double probability) {
         this.probability = probability;
     }
 
@@ -49,14 +49,14 @@ class Connection implements Comparable<Connection>{
          */
 
     public int compareTo(Connection other){
-        return (this.getFrequency() - other.getFrequency());
+        return (other.getFrequency() - this.getFrequency());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Connection that)) return false;
-        return frequency == that.frequency && Objects.equals(points_to, that.points_to);
+        return Objects.equals(points_to, that.points_to);
     }
 
     @Override

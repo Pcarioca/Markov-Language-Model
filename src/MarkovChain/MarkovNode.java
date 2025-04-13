@@ -170,4 +170,27 @@ class MarkovNode implements Comparable<MarkovNode> {
     }
 
 
+    ////Generating part
+
+    public MarkovNode getNextNodeByProbability() {
+        if (connections.isEmpty()) {
+            return null;
+        }
+
+        // updateProbabilities() has been called already,
+
+        double randVal = Math.random();
+        double cumulative = 0.0;
+
+        for (Connection c : connections) {
+            cumulative += c.getProbability();
+            if (randVal <= cumulative) {
+                return c.getPoints_to();
+            }
+        }
+        // Fallback (should rarely happen if probabilities sum to 1.0):
+        return connections.last().getPoints_to();
+    }
+
+
 }

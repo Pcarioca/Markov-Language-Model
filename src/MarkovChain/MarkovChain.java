@@ -1,5 +1,12 @@
 package MarkovChain;
 
+import java.io.BufferedReader;
+//import java.io.FileNotFoundException;
+import java.io.FileReader;
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.Scanner;
 import java.util.TreeSet;
 
 public class MarkovChain {
@@ -136,21 +143,86 @@ public class MarkovChain {
         }
     }
 
+    public void generate(String seed, int wordsCount){
+        MarkovNode currentNode = this.getNodeWord(seed);
+        MarkovNode lastNode;
+        int newline_trigger = 0;
+        if(currentNode != null){
+            for(int i=0; i<wordsCount; i++) {
+                System.out.print(currentNode.getWord() + " ");
+                newline_trigger += 1;
+                if(newline_trigger == 10){
+                    System.out.println("");
+                    newline_trigger = 0;
+                }
+                lastNode = currentNode;
+                currentNode = currentNode.getNextNodeByProbability();
+                if(currentNode == null){
+                    currentNode = lastNode; // backtrack if the current reached node has no outward connections.
+//                    return; //If we reach a node
+                }
+
+            }
+        } else {
+            throw new NonExistingNode(seed);
+        }
+
+    }
+
+    public static void addWordsFromFile(MarkovChain chain, String filePath) {
+//        List<String> words = new ArrayList<>();
+
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                // Split the line by whitespace
+                String[] tokens = line.split("\\s+");
+                for (String token : tokens) {
+                    //remove punctuation or make everything lowercase, etc.
+                    // This also removes leading and trailing punctuation, numbers, etc.
+//                    String cleaned = token.replaceAll("[^a-zA-Z]+", "").toLowerCase().trim();
+
+                    // Only add non-empty words
+//                    if (!cleaned.isEmpty()) {
+//                        chain.addWord(cleaned);
+//                    }
+                    if(token.matches("^[A-Za-z0-9\\p{Punct}]+$")) {
+                        chain.addWord(token);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error: File " + filePath + " not found.");
+        }
+
+    }
 
     public static void main(String[] args) {
 
 
-        String text_trial = "After some time the girl's wedding-day came, and she was decked out, " +
-                "and went in a great procession over the fields to the\n " +
-                "place where the church was. All at once she came to a stream After some After some After me";
+//        String text_trial = "After some time the girl's wedding-day came, and she was decked out, " +
+//                "and went in a great procession over the fields to the " +
+//                "place where the church was. All at once she came to a stream After some After some After me";
 
         MarkovChain m = new MarkovChain();
 
-        m.addText(text_trial);
-
+//        m.addText(text_trial);
+//        addWordsFromFile(m, "C:\\Users\\Andrei\\Desktop\\ada\\Markov Language Model\\textFiles\\GrimmsCompleteFairyTales.txt");
+//        addWordsFromFile(m, "C:\\Users\\Andrei\\Desktop\\ada\\Markov Language Model\\textFiles\\IntroductionToAlgorythms.txt");
+        addWordsFromFile(m, "C:\\Users\\Andrei\\Desktop\\ada\\Markov Language Model\\textFiles\\algs_obly_text.txt");
         m.updateProbabilities();
 
-        System.out.println(m);
+//        Scanner sc = new Scanner(System.in);
+//        System.out.println(m);
+
+//        System.out.print("Enter Seed (one of the quoted words above) : ");
+//        String lastWord = sc.nextLine();
+
+
+        m.generate(m.nodes.getFirst().getWord(), 500);
+
 
     }
 

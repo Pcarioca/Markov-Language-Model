@@ -5,8 +5,8 @@ import java.util.TreeSet;
 
 class MarkovNode implements Comparable<MarkovNode> {
     private String word;
-    private TreeSet<Connection> connections; //list of outward arcs
-    private int countConnections; //number of outward arcs
+    private TreeSet<Connection> connections = new TreeSet<>(); //list of outward arcs
+//    private int countConnections; //number of outward arcs
 
     public MarkovNode(String word) {
         this.word = word;
@@ -38,9 +38,10 @@ class MarkovNode implements Comparable<MarkovNode> {
         return null;
     }
 
-    private Connection addConection(Connection newCon){ //returns the connection just added.
+    public Connection addConnection(Connection newCon){ //returns the connection just added.
         Connection to_return = null;
 //        if(this.pointsToWord(newCon.getPointingWord())){
+
             for(Connection c: this.connections){
                 if(c.getPointingWord().equals(newCon.getPointingWord())){ //will be equal if it's the same word
                     c.setFrequency(c.getFrequency() + 1);
@@ -58,8 +59,27 @@ class MarkovNode implements Comparable<MarkovNode> {
     }
 
     public Connection addTransitionToWord(String word){
-        Connection newCon = new Connection(1, new MarkovNode(word));
-        return addConection(newCon);
+        Connection newCon = new Connection(new MarkovNode(word));
+        return addConnection(newCon);
+    }
+
+
+    public Boolean connectedWith(String Word){
+        for(Connection c: connections){
+            if(c.getPointingWord().equals(word)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Connection getConnectionToWord(String searchWord){
+        for(Connection c: connections){
+            if(c.getPointingWord().equals(searchWord)){
+                return c;
+            }
+        }
+        return null;
     }
 
 //    public MarkovNode addTransitionToNode(MarkovNode node){
@@ -77,27 +97,43 @@ class MarkovNode implements Comparable<MarkovNode> {
         return false;
     }
 
-    public int getCountConnections() {
-        return countConnections;
-    }
+//    public int getCountConnections() {
+//        return countConnections;
+//    }
 
-    public void setCountConnections(int countConnections) {
-        this.countConnections = countConnections;
-    }
+//    public void setCountConnections(int countConnections) {
+//        this.countConnections = countConnections;
+//    }
 
         /*
             parses all the nodes and sets probabilities accordingly
         */
 
+//    public void updateProbabilities_old() {
+//        if(this.countConnections == 0) return;
+//        for (Connection pointer : connections) {
+//            pointer.setProbability((double) pointer.getFrequency() / this.getCountConnections());
+//        }
+//    }
+
     public void updateProbabilities() {
-        if(this.countConnections == 0) return;
+        // First compute the total frequency from all connections
+        int totalFrequency = 0;
         for (Connection pointer : connections) {
-            pointer.setProbability((double) pointer.getFrequency() / this.getCountConnections());
+            totalFrequency += pointer.getFrequency();
+        }
+
+        // Now compute each connection's probability = freq / totalFrequency
+        for (Connection pointer : connections) {
+            double p = (double) pointer.getFrequency() / totalFrequency;
+            pointer.setProbability(p);
         }
     }
 
     public int compareTo(MarkovNode other) {
-        return Integer.compare(getCountConnections(), other.getCountConnections());
+        // Compare by word, which ensures TreeSet ordering is consistent with equals().
+        // That way, each distinct word becomes its own distinct node in the TreeSet.
+        return this.word.compareTo(other.word);
     }
 
 
@@ -117,11 +153,11 @@ class MarkovNode implements Comparable<MarkovNode> {
     public String toString() {
 
         StringBuilder to_ret = new StringBuilder();
-        to_ret.append("The word is " + this.getWord() + " and it points to: ");
+        to_ret.append("The word is \"" + this.getWord() + "\" and it points to: \n");
 
         int i = 1;
         for (Connection c : this.connections) {
-            to_ret.append(i + ": word " + c.getPointingWord() + " with a frequency of " + c.getFrequency() + " And a probability of " + c.getProbability());
+            to_ret.append(i +  ": word \"" + c.getPointingWord() + "\" with a frequency of " + c.getFrequency() + " And a probability of :" + c.getProbability());
             to_ret.append("\n");
             i++;
         }

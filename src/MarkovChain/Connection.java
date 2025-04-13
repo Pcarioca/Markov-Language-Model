@@ -7,10 +7,15 @@ class Connection implements Comparable<Connection>{
     private double probability;
     private MarkovNode points_to;
 
-    public Connection(int frequency, MarkovNode points_to){
-        this.frequency = frequency;
+    public Connection(MarkovNode points_to){
+        this.frequency = 1;
         this.points_to = points_to;
     }
+
+    public void increaseFrequency(){
+        this.setFrequency(getFrequency()+1);
+    }
+
 
     public MarkovNode getPoints_to(){
         return this.points_to;
@@ -49,7 +54,7 @@ class Connection implements Comparable<Connection>{
          */
 
     public int compareTo(Connection other){
-        return (other.getFrequency() - this.getFrequency());
+        return this.getPointingWord().compareTo(other.getPointingWord());
     }
 
     @Override

@@ -6,10 +6,12 @@ import java.util.TreeSet;
 class MarkovNode implements Comparable<MarkovNode> {
     private String word;
     private TreeSet<Connection> connections = new TreeSet<>(); //list of outward arcs
+//    int visited; //package protected
 //    private int countConnections; //number of outward arcs
 
     public MarkovNode(String word) {
         this.word = word;
+//        this.visited = 0;
     }
 
     public String getWord() {
@@ -184,7 +186,9 @@ class MarkovNode implements Comparable<MarkovNode> {
 
         for (Connection c : connections) {
             cumulative += c.getProbability();
-            if (randVal <= cumulative) {
+            if (randVal <= cumulative) { //only be able to return nodes
+                                                                        //that have been visited less than 3 times.
+//                c.getPoints_to().visited += 1;
                 return c.getPoints_to();
             }
         }

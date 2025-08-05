@@ -186,8 +186,7 @@ class MarkovNode implements Comparable<MarkovNode> {
 
         for (Connection c : connections) {
             cumulative += c.getProbability();
-            if (randVal <= cumulative) { //only be able to return nodes
-                                                                        //that have been visited less than 3 times.
+            if (randVal <= cumulative) {
 //                c.getPoints_to().visited += 1;
                 return c.getPoints_to();
             }

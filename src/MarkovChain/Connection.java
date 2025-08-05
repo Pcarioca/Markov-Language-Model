@@ -54,7 +54,7 @@ class Connection implements Comparable<Connection>{
          */
 
     public int compareTo(Connection other){
-        return this.getPointingWord().compareTo(other.getPointingWord());
+        return this.frequency - other.frequency;
     }
 
     @Override

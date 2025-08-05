@@ -13,6 +13,7 @@ public class MarkovUI {
     private JTextField seedField;
     private JTextArea outputArea;
     private JLabel statusLabel;
+    private String fileName;
 
     private MarkovChain chain; // built after upload
 
@@ -64,6 +65,7 @@ public class MarkovUI {
             JFileChooser chooser = new JFileChooser();
             if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
                 File file = chooser.getSelectedFile();
+                fileName = file.getName();
                 statusLabel.setText("Loading reference …     (this may take a while for large files)");
                 uploadButton.setEnabled(false);
 
@@ -73,11 +75,12 @@ public class MarkovUI {
                     protected Void doInBackground() throws Exception {
                         chain = new MarkovChain();
 //                        chain.buildFromFile(file.getAbsolutePath());
-                        long startTime = System.currentTimeMillis();
+//                        long startTime = System.currentTimeMillis();
+
                         MarkovChain.addWordsFromFile(chain, file.getAbsolutePath());
-                        long elapsedMillis = System.currentTimeMillis() - startTime;
-                        long elapsedSeconds = elapsedMillis / 1000; // convert to seconds
-                        System.out.println(elapsedSeconds + " seconds");
+//                        long elapsedMillis = System.currentTimeMillis() - startTime;
+//                        long elapsedSeconds = elapsedMillis / 1000; // convert to seconds
+//                        System.out.println(elapsedSeconds + " seconds");
 //                        chain.updateProbabilities();
                         return null;
                     }
@@ -86,7 +89,7 @@ public class MarkovUI {
                     protected void done() {
                         try {
                             get(); // rethrow exceptions, if any
-                            statusLabel.setText("Reference loaded: " + file.getName());
+                            statusLabel.setText("Reference loaded: " + fileName);
                             seedField.setEnabled(true);
                             generateButton.setEnabled(true);
                         } catch (Exception ex) {
@@ -133,7 +136,7 @@ public class MarkovUI {
                     try {
                         String text = get();
                         outputArea.setText(text);
-                        statusLabel.setText("Generation complete.");
+                        statusLabel.setText("Generation complete. Reference: " + fileName);
                     } catch (Exception ex) {
                         if (ex.getCause() instanceof NonExistingNode) {
                             JOptionPane.showMessageDialog(frame,
@@ -144,7 +147,7 @@ public class MarkovUI {
                                     "Generation failed: " + ex.getMessage(),
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                        statusLabel.setText("Ready.");
+                        statusLabel.setText("Ready.  Reference: " + fileName);
                     } finally {
                         generateButton.setEnabled(true);
                     }

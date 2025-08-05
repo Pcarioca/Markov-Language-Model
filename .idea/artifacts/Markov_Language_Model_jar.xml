@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact name="Markov Language Model:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Markov_Language_Model_jar</output-path>
+    <root id="root">
+      <element id="archive" name="Markov Language Model.jar">
+        <element id="module-output" name="Markov Language Model" />
+      </element>
+    </root>
+  </artifact>
+</component>
